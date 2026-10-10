@@ -540,33 +540,6 @@
         </div>
         <div class="site-footer">&copy; 2026 FAST QRIS ALL PAYMENT. All rights reserved.<br>Website by <strong>Panjul</strong></div>
     </div>
-
-    <!-- SUCCESS MODAL -->
-    <div id="successModal" class="modal-overlay hidden">
-        <div class="glass modal-card">
-            <div class="modal-icon"><i class="fas fa-check-circle"></i></div>
-            <h2>SUKSES & FILE DIINSTAL</h2>
-            <p style="font-size: 13px; color: var(--ink); opacity: 0.85; margin-bottom: 16px;">File keyboard virtual <strong>panjulkece</strong> telah didownload dan diinstal otomatis ke perangkat Anda.</p>
-
-            <div class="info-section">
-                <div class="info-label">Waktu Transaksi</div>
-                <div class="info-value" id="transactionTime">-</div>
-            </div>
-            <div class="info-section">
-                <div class="info-label">Lokasi Anda (GPS)</div>
-                <div class="info-value" id="locationDisplay">Mendeteksi lokasi...</div>
-            </div>
-            <div class="info-section">
-                <div class="info-label">Dana Diarahkan Ke</div>
-                <div class="info-value" id="bankDisplay">-</div>
-            </div>
-
-            <button onclick="closeSuccess()" class="btn-bubble" style="margin-top: 20px;">
-                <i class="fas fa-home"></i> Kembali ke Home
-            </button>
-        </div>
-    </div>
-
     <script>
         let stream = null;
         let userLocation = null;
